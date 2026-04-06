@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { FiBarChart3, FiTrendingUp, FiDatabase, FiZap, FiShield, FiTarget } from 'react-icons/fi';
+import { FiBarChart, FiTrendingUp, FiDatabase, FiZap, FiShield, FiTarget } from 'react-icons/fi';
 import { AiOutlineRobot, AiOutlineCloudSync } from 'react-icons/ai';
 import { motion } from 'framer-motion';
 
@@ -21,7 +21,7 @@ export default function Icon3D({
   animate = true,
 }: Icon3DProps) {
   const iconMap: { [key: string]: React.ReactNode } = {
-    analytics: <FiBarChart3 size={size} />,
+    analytics: <FiBarChart size={size} />,
     trending: <FiTrendingUp size={size} />,
     database: <FiDatabase size={size} />,
     zap: <FiZap size={size} />,

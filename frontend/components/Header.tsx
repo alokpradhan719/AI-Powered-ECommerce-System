@@ -27,15 +27,15 @@ export default function Header() {
           <Link href="/" className="text-slate-300 hover:text-primary transition-colors font-medium">
             Home
           </Link>
+          <Link href="/products" className="text-slate-300 hover:text-primary transition-colors font-medium">
+            Products
+          </Link>
+          <Link href="/customers" className="text-slate-300 hover:text-primary transition-colors font-medium">
+            Customers
+          </Link>
           <Link href="/analytics" className="text-slate-300 hover:text-primary transition-colors font-medium">
             Analytics
           </Link>
-          <a href="#features" className="text-slate-300 hover:text-primary transition-colors font-medium">
-            Features
-          </a>
-          <a href="#pricing" className="text-slate-300 hover:text-primary transition-colors font-medium">
-            Pricing
-          </a>
         </nav>
 
         {/* CTA Button */}
@@ -58,15 +58,15 @@ export default function Header() {
             <Link href="/" className="text-slate-300 hover:text-primary transition-colors font-medium">
               Home
             </Link>
+            <Link href="/products" className="text-slate-300 hover:text-primary transition-colors font-medium">
+              Products
+            </Link>
+            <Link href="/customers" className="text-slate-300 hover:text-primary transition-colors font-medium">
+              Customers
+            </Link>
             <Link href="/analytics" className="text-slate-300 hover:text-primary transition-colors font-medium">
               Analytics
             </Link>
-            <a href="#features" className="text-slate-300 hover:text-primary transition-colors font-medium">
-              Features
-            </a>
-            <a href="#pricing" className="text-slate-300 hover:text-primary transition-colors font-medium">
-              Pricing
-            </a>
           </nav>
         </div>
       )}

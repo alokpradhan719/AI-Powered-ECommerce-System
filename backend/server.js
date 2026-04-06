@@ -249,6 +249,170 @@ app.get('/api/stats/overview', async (req, res) => {
   }
 });
 
+// Get all products
+app.get('/api/products', async (req, res) => {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const query = `
+      SELECT p.product_id, p.name, p.price, p.sku, p.category_id, c.name as category_name
+      FROM PRODUCTS p
+      LEFT JOIN CATEGORIES c ON p.category_id = c.category_id
+      ORDER BY p.product_id DESC
+      LIMIT 100
+    `;
+    
+    const [rows] = await conn.query(query);
+    
+    res.json({
+      success: true,
+      data: rows,
+      count: rows.length,
+    });
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    res.status(500).json({
+      error: 'Failed to fetch products',
+      details: error.message,
+    });
+  } finally {
+    if (conn) conn.release();
+  }
+});
+
+// Get all customers
+app.get('/api/customers', async (req, res) => {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const query = `
+      SELECT customer_id, name, email, phone, region, created_at
+      FROM CUSTOMERS
+      ORDER BY created_at DESC
+      LIMIT 100
+    `;
+    
+    const [rows] = await conn.query(query);
+    
+    res.json({
+      success: true,
+      data: rows,
+      count: rows.length,
+    });
+  } catch (error) {
+    console.error('Error fetching customers:', error);
+    res.status(500).json({
+      error: 'Failed to fetch customers',
+      details: error.message,
+    });
+  } finally {
+    if (conn) conn.release();
+  }
+});
+
+// Get all orders
+app.get('/api/orders', async (req, res) => {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const query = `
+      SELECT o.order_id, o.customer_id, c.name as customer_name, o.total_amount, o.status, o.order_date
+      FROM ORDERS o
+      LEFT JOIN CUSTOMERS c ON o.customer_id = c.customer_id
+      ORDER BY o.order_date DESC
+      LIMIT 100
+    `;
+    
+    const [rows] = await conn.query(query);
+    
+    res.json({
+      success: true,
+      data: rows,
+      count: rows.length,
+    });
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    res.status(500).json({
+      error: 'Failed to fetch orders',
+      details: error.message,
+    });
+  } finally {
+    if (conn) conn.release();
+  }
+});
+
+// Get product by ID with inventory
+app.get('/api/products/:id', async (req, res) => {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const { id } = req.params;
+    
+    const query = `
+      SELECT p.*, c.name as category_name, i.stock, i.reorder_level
+      FROM PRODUCTS p
+      LEFT JOIN CATEGORIES c ON p.category_id = c.category_id
+      LEFT JOIN INVENTORY i ON p.product_id = i.product_id
+      WHERE p.product_id = ?
+    `;
+    
+    const [rows] = await conn.query(query, [id]);
+    
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    
+    res.json({
+      success: true,
+      data: rows[0],
+    });
+  } catch (error) {
+    console.error('Error fetching product:', error);
+    res.status(500).json({
+      error: 'Failed to fetch product',
+      details: error.message,
+    });
+  } finally {
+    if (conn) conn.release();
+  }
+});
+
+// Get customer by ID with orders
+app.get('/api/customers/:id', async (req, res) => {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const { id } = req.params;
+    
+    const query = `
+      SELECT c.*, COUNT(o.order_id) as total_orders, SUM(o.total_amount) as total_spent
+      FROM CUSTOMERS c
+      LEFT JOIN ORDERS o ON c.customer_id = o.customer_id
+      WHERE c.customer_id = ?
+      GROUP BY c.customer_id
+    `;
+    
+    const [rows] = await conn.query(query, [id]);
+    
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'Customer not found' });
+    }
+    
+    res.json({
+      success: true,
+      data: rows[0],
+    });
+  } catch (error) {
+    console.error('Error fetching customer:', error);
+    res.status(500).json({
+      error: 'Failed to fetch customer',
+      details: error.message,
+    });
+  } finally {
+    if (conn) conn.release();
+  }
+});
+
 // Sample queries endpoint
 app.get('/api/queries/samples', (req, res) => {
   const samples = [
