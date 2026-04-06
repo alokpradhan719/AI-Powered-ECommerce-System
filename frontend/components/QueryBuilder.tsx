@@ -5,6 +5,16 @@ import { analyzeQuestion, getSampleQueries } from '../lib/api';
 import ResultsDisplay from './ResultsDisplay';
 import { Loader, Send, Sparkles } from 'lucide-react';
 
+interface AnalysisResponse {
+  success: boolean;
+  question: string;
+  sqlQuery: string;
+  rowCount: number;
+  data: any[];
+  insights: string;
+  generatedAt: string;
+}
+
 interface QueryBuilderProps {
   onAnalysisComplete?: () => void;
 }
@@ -12,7 +22,7 @@ interface QueryBuilderProps {
 export default function QueryBuilder({ onAnalysisComplete }: QueryBuilderProps) {
   const [question, setQuestion] = useState('');
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState(null);
+  const [result, setResult] = useState<AnalysisResponse | null>(null);
   const [error, setError] = useState('');
   const [sampleQueries, setSampleQueries] = useState<string[]>([]);
 
