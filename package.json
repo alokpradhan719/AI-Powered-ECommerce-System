@@ -5,8 +5,7 @@
   "description": "AI-powered e-commerce analytics platform",
   "scripts": {
     "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\"",
-    "build": "npm run build:backend && npm run build:frontend",
-    "build:backend": "cd backend && npm install",
+    "build": "npm run build:frontend",
     "build:frontend": "cd frontend && npm install && npm run build",
     "start": "node backend/server.js",
     "db:setup": "mysql -u root -p < database/full_database.sql"
