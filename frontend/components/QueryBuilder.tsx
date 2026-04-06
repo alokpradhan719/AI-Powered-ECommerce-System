@@ -3,7 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { analyzeQuestion, getSampleQueries } from '../lib/api';
 import ResultsDisplay from './ResultsDisplay';
-import { Loader, Send, Sparkles } from 'lucide-react';
+import { FiSend } from 'react-icons/fi';
+import { AiOutlineThunderbolt } from 'react-icons/ai';
+import { motion } from 'framer-motion';
 
 interface AnalysisResponse {
   success: boolean;
@@ -62,73 +64,114 @@ export default function QueryBuilder({ onAnalysisComplete }: QueryBuilderProps) 
     setQuestion(sample);
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+  };
+
   return (
-    <div className="space-y-6">
+    <motion.div className="space-y-6" variants={containerVariants} initial="hidden" animate="visible">
       {/* Query Input Section */}
-      <div className="bg-gradient-to-r from-purple-900/40 to-blue-900/40 backdrop-blur-md border border-purple-500/30 rounded-lg p-8">
-        <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-purple-400" />
-          Ask Your Question
+      <motion.div variants={itemVariants} className="glass-dark rounded-2xl p-8 border border-primary/30 overflow-hidden">
+        {/* Animated background */}
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-primary/20 rounded-full blur-3xl"></div>
+        </div>
+
+        <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3 relative z-10">
+          <div className="p-3 bg-gradient-to-br from-primary to-secondary rounded-lg">
+            <AiOutlineThunderbolt className="w-6 h-6 text-white" />
+          </div>
+          <span>Ask Your Question</span>
         </h2>
 
-        <form onSubmit={handleAnalyze} className="space-y-4">
-          <div className="relative">
+        <form onSubmit={handleAnalyze} className="space-y-4 relative z-10">
+          <div className="relative group">
             <input
               type="text"
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
-              placeholder="e.g., What are the top 5 best-selling products?"
-              className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500/50 focus:bg-white/20 transition-all"
+              placeholder="e.g., What are the top 5 best-selling products in the last 30 days?"
+              className="w-full bg-white/5 border border-primary/30 rounded-xl px-6 py-4 text-white placeholder-slate-400 focus:outline-none focus:border-primary focus:bg-white/10 transition-all duration-300 text-lg"
               disabled={loading}
             />
             <button
               type="submit"
               disabled={loading || !question.trim()}
-              className="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg p-2 transition-all"
+              className="absolute right-3 top-1/2 -translate-y-1/2 bg-gradient-to-r from-primary to-secondary hover:shadow-glow-lg disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg p-3 transition-all duration-300 transform hover:scale-110"
             >
               {loading ? (
-                <Loader className="w-5 h-5 animate-spin" />
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
               ) : (
-                <Send className="w-5 h-5" />
+                <FiSend className="w-5 h-5" />
               )}
             </button>
           </div>
 
           {error && (
-            <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-3 text-red-200 text-sm">
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-red-500/20 border border-red-500/50 rounded-xl p-4 text-red-200 text-sm"
+            >
               {error}
-            </div>
+            </motion.div>
           )}
         </form>
 
         {/* Sample Queries */}
         {sampleQueries.length > 0 && !result && (
-          <div className="mt-6">
-            <p className="text-sm text-gray-400 mb-3">Quick Examples:</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
+          <motion.div variants={itemVariants} className="mt-8 pt-6 border-t border-primary/20">
+            <p className="text-sm text-slate-400 font-semibold uppercase tracking-wider mb-4">📌 Quick Examples</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {sampleQueries.slice(0, 4).map((sample, idx) => (
-                <button
+                <motion.button
                   key={idx}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={() => handleSampleClick(sample)}
-                  className="text-left text-xs bg-white/10 hover:bg-white/20 border border-white/20 rounded p-2 text-gray-300 transition-all"
+                  className="text-left text-sm bg-white/5 hover:bg-white/10 border border-primary/20 hover:border-primary/50 rounded-lg p-4 text-slate-300 transition-all duration-300 group"
                 >
-                  {sample}
-                </button>
+                  <div className="text-primary font-semibold text-xs mb-1 group-hover:text-secondary transition-colors">Sample Query</div>
+                  <p className="line-clamp-2">{sample}</p>
+                </motion.button>
               ))}
             </div>
-          </div>
+          </motion.div>
         )}
-      </div>
+      </motion.div>
 
       {/* Results Section */}
-      {result && <ResultsDisplay result={result} />}
+      {result && (
+        <motion.div variants={itemVariants}>
+          <ResultsDisplay result={result} />
+        </motion.div>
+      )}
 
       {loading && (
-        <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-12 text-center">
-          <Loader className="w-8 h-8 animate-spin mx-auto mb-4 text-purple-400" />
-          <p className="text-gray-300">Analyzing your question...</p>
-        </div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="glass rounded-2xl p-12 text-center border border-primary/20"
+        >
+          <div className="flex justify-center mb-6">
+            <div className="relative w-12 h-12">
+              <div className="absolute inset-0 bg-gradient-to-r from-primary to-secondary rounded-full opacity-20 blur-lg animate-pulse"></div>
+              <div className="absolute inset-2 border-3 border-transparent border-t-primary border-r-primary rounded-full animate-spin"></div>
+            </div>
+          </div>
+          <p className="text-slate-300 text-lg font-medium">Analyzing your question with AI...</p>
+          <p className="text-slate-400 text-sm mt-2">This usually takes a few seconds</p>
+        </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 }
