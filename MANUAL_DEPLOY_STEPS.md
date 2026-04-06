@@ -49,7 +49,7 @@ DB_HOST = localhost
 DB_USER = root
 DB_PASSWORD = 1234
 DB_NAME = ecommerce_analytics
-ANTHROPIC_API_KEY = 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
+ANTHROPIC_API_KEY = (your-api-key-here)
 NODE_ENV = production
 ```
 
