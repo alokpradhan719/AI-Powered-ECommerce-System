@@ -1,0 +1,27 @@
+{
+  "name": "ai-ecommerce-analytics-backend",
+  "version": "1.0.0",
+  "description": "AI-powered e-commerce analytics backend with natural language SQL query generation",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "build": "echo 'Build complete'",
+    "test": "echo 'Testing...'"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "mysql2": "^3.6.0",
+    "@anthropic-ai/sdk": "^0.24.0",
+    "body-parser": "^1.20.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}
