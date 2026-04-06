@@ -11,7 +11,7 @@
     "start": "node backend/server.js",
     "db:setup": "mysql -u root -p < database/full_database.sql"
   },
-  "devDependencies": {
-    "concurrently": "^8.2.0"
+  "engines": {
+    "node": "20.x"
   }
 }
