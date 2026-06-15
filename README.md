@@ -297,4 +297,4 @@ For issues and questions:
 
 ---
 
-**Built with ❤️ using AI and Modern Web Technologies**
+
